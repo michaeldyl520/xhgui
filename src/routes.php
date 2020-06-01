@@ -124,3 +124,13 @@ $app->get('/waterfall', function () use ($di, $app) {
 $app->get('/waterfall/data', function () use ($di) {
     $di['waterfallController']->query();
 })->name('waterfall.data');
+
+$app->get('/run/flamegraph', function () use ($di, $app) {
+    $app->controller = $di['runController'];
+    $app->controller->flamegraph();
+})->name('run.flamegraph');
+
+$app->get('/run/flamegraph/data', function () use ($di, $app) {
+    $di['runController']->flamegraphData();
+})->name('run.flamegraph.data');
+

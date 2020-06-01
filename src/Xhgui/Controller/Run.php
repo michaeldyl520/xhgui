@@ -388,4 +388,30 @@ class Xhgui_Controller_Run extends Xhgui_Controller
         $response['Content-Type'] = 'application/json';
         return $response->body(json_encode($callgraph));
     }
+
+    public function flamegraph()
+    {
+        $request = $this->app->request();
+        $profile = $this->searcher->get($request->get('id'));
+
+        $this->_template = 'runs/flamegraph.twig';
+        $this->set(array(
+            'profile' => $profile,
+            'date_format' => $this->app->config('date.format'),
+        ));
+    }
+
+    public function flamegraphData()
+    {
+        $request = $this->app->request();
+        $response = $this->app->response();
+        $profile = $this->searcher->get($request->get('id'));
+        $metric = $request->get('metric') ?: 'wt';
+        $threshold = (float)$request->get('threshold') ?: 0.01;
+        $flamegraph = $profile->getFlamegraph($metric, $threshold);
+
+        $response['Content-Type'] = 'application/json';
+        return $response->body(json_encode($flamegraph));
+    }
+
 }
